@@ -1,0 +1,13 @@
+# Don't commit, but keep folder
+data/*
+!data/.gitkeep
+weights/*
+!weights/.gitkeep
+
+# Ingore Spyer project stuff
+.spyproject/
+
+
+
+
+
