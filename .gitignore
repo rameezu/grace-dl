@@ -1,8 +1,8 @@
 # Don't commit, but keep folder
 data/*
-!data/.gitkeep
+!data/README.md
 weights/*
-!weights/.gitkeep
+!weights/README.md
 
 # Ingore Spyer project stuff
 .spyproject/
