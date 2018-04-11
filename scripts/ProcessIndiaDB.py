@@ -23,10 +23,10 @@ class ProcessIndiaDB():
             self.dfAll = pd.DataFrame(columns=['wellid', 'date', 'waterlvl'])
             self.dfwellInfo = pd.DataFrame(columns=['wellid', 'lat', 'lon'])
         
-            print 'Processing,', dbfile
+            print('Processing,', dbfile)
             self.parseCSV(dbfile)
-            print self.dfwellInfo.shape
-            print self.dfAll.shape
+            print(self.dfwellInfo.shape)
+            print(self.dfAll.shape)
             np.save('indiadb.npy', [self.dfAll, self.dfwellInfo])
         else:
             self.dfAll, self.dfwellInfo = np.load('indiadb.npy')
@@ -35,7 +35,7 @@ class ProcessIndiaDB():
         df = pd.read_csv(filename, delimiter=',')
         self.dfwellInfo=df[['wellid','Location','Longitude','Latitude']]
         temp = (df.iloc[:, 4:]).as_matrix()
-        print temp.shape
+        print(temp.shape)
         nMonths = temp.shape[1]
         nWells = temp.shape[0]
         arr = np.zeros((nMonths), dtype='int')
@@ -50,11 +50,11 @@ class ProcessIndiaDB():
         '''
         dfwell = self.dfwellInfo[abs(self.dfwellInfo['Latitude']-lat)<cellsize]
         dfwell = dfwell[abs(dfwell['Longitude']-lon)<cellsize]
-        print 'number of wells found in ({0}, {1}) is {2}'.format(lon, lat, dfwell.shape[0])
+        print('number of wells found in ({0}, {1}) is {2}'.format(lon, lat, dfwell.shape[0]))
         #inner join two dataframes
         df = pd.merge(dfwell, self.dfAll, on='wellid', how='inner')
         if df.shape[0] == 0:
-            print 'no well record was found'
+            print('no well record was found')
             return None
         #group by months
         #convert to equivalent water height in cm

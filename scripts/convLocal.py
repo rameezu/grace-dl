@@ -98,7 +98,7 @@ def seqCNN1(seq_len=6, summary=False,backend='tf'):
     model.add(Reshape((N,N)))
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
         plot_model(model, to_file='cnn1model.png', show_shapes=True)
 
     return model
@@ -131,7 +131,7 @@ def seqCNN3(seq_len=3, summary=False,backend='tf'):
 
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
         plot_model(model, to_file='seqCNN3model.png', show_shapes=True)
     return model
 
@@ -161,7 +161,7 @@ def vcg16CNN(seq_len=6, summary=False,backend='tf'):
     model = Model(input=input, output=x)
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
         plot_model(model, to_file='vgg16model1.png', show_shapes=True)
     return model
 
@@ -190,7 +190,7 @@ def resnetCNN(seq_len=6, summary=False, backend='tf'):
     model = Model(input=input, output=x)
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
     return model
 
 def getUnetModel(Ns, seq_len=3, summary=False):
@@ -237,7 +237,7 @@ def getUnetModel(Ns, seq_len=3, summary=False):
     model = Model(input=inputs, output=x)
     #model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=[jaccard_coef, jaccard_coef_int, 'accuracy'])
     if summary:
-        print(model.summary())
+        print((model.summary()))
     return model    
 
 def getLSTMModel(Ns, seq_len=3, backend='tf'):
@@ -287,7 +287,7 @@ def compositeLSTM(n_p=None, summary=False, backend='tf'):
     '''
     model = getLSTMModel(Ns=N, seq_len=n_p)
     if summary:
-        print(model.summary())
+        print((model.summary()))
     return model
 
 def rmse(y_true, y_pred):
@@ -353,11 +353,11 @@ def LSTMDriver(watershedName, watershedInner, retrain=False):
     
     mse = np.zeros((Y_test.shape[0]))
     ypred = model.predict(X_test, batch_size=batch_size, verbose=0)
-    print ypred.shape
+    print(ypred.shape)
     for i in range(ypred.shape[0]):        
         mse[i]=RMSE(Y_test[i,:,:], ypred[i,:,:])
 
-    print 'RMSE=%s' % np.mean(mse)
+    print('RMSE=%s' % np.mean(mse))
 
 def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain=False):
     '''
@@ -406,7 +406,7 @@ def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain
     x = Reshape((N,N))(x)    
     
     model = Model(inputs=[inputPLayer, inLayer], outputs=[x])
-    print model.summary()
+    print(model.summary())
     plot_model(model, to_file='cnncompositemodel.png', show_shapes=True)
 
     solver=3
@@ -467,8 +467,8 @@ def CNNvgg16(inputLayer):
     the transfer learning model for use with composite model
     '''
     input_shape=[N, N, inputLayer._keras_shape[3]] # l, h, w, c
-    print 'input shape = ', input_shape
-    print inputLayer._keras_shape
+    print('input shape = ', input_shape)
+    print(inputLayer._keras_shape)
 
     model_vgg16_conv = VGG16(include_top=False, input_shape=input_shape, weights='imagenet')
     for layer in model_vgg16_conv.layers:
@@ -537,7 +537,7 @@ def CNNNDVICompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, mod
     
                                                                                                         
     model = Model(inputs=[inputPLayer, inputNDVILayer, inLayer], outputs=[x])
-    print(model.summary())
+    print((model.summary()))
     plot_model(model, to_file='{0}model.png'.format(label), show_shapes=True)
     
     solver=3
@@ -683,7 +683,7 @@ def calcRMat(gldas,  Ytrain, Ypred, Xtrain, Xpred, n_p, validationOnly=False):
         mat = np.r_[matTrain,matPred[1:]]
         corrmat = np.zeros((gldas.nvalidCells), dtype='float64')
         nMonths = mat.shape[0]
-        print 'array dimensions', mat.shape[0], gldas.graceArr.shape[0]
+        print('array dimensions', mat.shape[0], gldas.graceArr.shape[0])
         for i in range(mat.shape[1]):
             corrmat[i],_ = pearsonr(mat[:,i], gldas.graceArr[n_p-1:nMonths+n_p,i])
     else:
@@ -693,7 +693,7 @@ def calcRMat(gldas,  Ytrain, Ypred, Xtrain, Xpred, n_p, validationOnly=False):
         mat = matPred
         corrmat = np.zeros((gldas.nvalidCells), dtype='float64')
         nTrain = Ytrain.shape[0]
-        print 'array dimensions', mat.shape[0], gldas.graceArr.shape[0]
+        print('array dimensions', mat.shape[0], gldas.graceArr.shape[0])
         for i in range(mat.shape[1]):
             corrmat[i],_ = pearsonr(mat[:,i], gldas.graceArr[nTrain:-1,i])
         
@@ -759,8 +759,8 @@ def plotCorrmat(label, gldas, corrected=None, masking=True):
         plt.plot(cx,cy, '-', color='#7B7D7D')
         plt.clim(-.6, 0.6)
         plt.title('$\Delta R$')
-        print np.nanmin(corrected-gldas.gldas_grace_R)
-        print np.nanmax(corrected-gldas.gldas_grace_R)
+        print(np.nanmin(corrected-gldas.gldas_grace_R))
+        print(np.nanmax(corrected-gldas.gldas_grace_R))
     plt.savefig('cnn_grace_corr%s.png' % label, dpi=fig.dpi,transparent=True, frameon=False)
         
 def calculateBasinAverage(nldas, Y):
@@ -814,7 +814,7 @@ def calcCNN_GW_RMat(gldas, Ytrain, Ypred, n_p):
     for i in range(2005,2014):
         b = np.r_[b, rng]
         rng = rng+12
-    print 'corr indices', b
+    print('corr indices', b)
     #need to shift to account for n_p
     #mat = mat[b-(n_p-1),:]
     mat = mat[b-(n_p-1),:]
@@ -830,7 +830,7 @@ def calcCNN_GW_RMat(gldas, Ytrain, Ypred, n_p):
     #convert to image
     temp = np.zeros((N,N))+np.NaN
     temp[gldas.gwvalidcells] = corrmat
-    print 'mean gw corr is', np.nanmean(corrmat)
+    print('mean gw corr is', np.nanmean(corrmat))
     return temp
 
 def plotGwCorrmat(label, gldas, gwcorrmat, masking=True):
@@ -838,8 +838,8 @@ def plotGwCorrmat(label, gldas, gwcorrmat, masking=True):
     '''
     plot correlation matrix between gw and CNN-learned model mismatch 
     '''
-    print 'max gw-grace correlation', np.nanmax(gwcorrmat)
-    print 'min gw-grace correlation', np.nanmin(gwcorrmat)
+    print('max gw-grace correlation', np.nanmax(gwcorrmat))
+    print('min gw-grace correlation', np.nanmin(gwcorrmat))
     
     cmap = ListedColormap((sns.diverging_palette(240, 10, s=80, l=55, n=9)).as_hex())
 
@@ -901,12 +901,12 @@ def doTesting(model, label, gldas, X_train, X_test, Y_test, Xa_train=None, Xa_te
     #do gw-grace correlation matrix
     gwcorrmat = calcCNN_GW_RMat(gldas, ytrain, ypred, n_p)
    
-    print ypred.shape
+    print(ypred.shape)
     mse = np.zeros((Y_test.shape[0]))
     for i in range(ypred.shape[0]):        
         mse[i]=RMSE(Y_test[i,:,:], ypred[i,:,:])
     #print 'all rmse', mse  
-    print 'RMSE=%s' % np.mean(mse)
+    print('RMSE=%s' % np.mean(mse))
 
     twsTrain = calculateBasinAverage(gldas, ytrain)    
     twsPred = calculateBasinAverage(gldas, ypred)    
@@ -916,16 +916,16 @@ def doTesting(model, label, gldas, X_train, X_test, Y_test, Xa_train=None, Xa_te
         
     #perform correlation up to 2016/12 [0, 154), total = 177
     
-    print '------------------------------------------------------------------------------------'
+    print('------------------------------------------------------------------------------------')
     nEnd = 177-n_p
     
-    print 'All: predicted vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nEnd]-predAll[:nEnd-n_p+1], gldas.twsgrace[n_p-1:nEnd])
-    print 'All: gldas vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nEnd], gldas.twsgrace[n_p-1:nEnd])
-    print 'Training: predicted vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nTrain]-predAll[:nTrain-n_p+1], gldas.twsgrace[n_p-1:nTrain])
-    print 'Training: gldas vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nTrain], gldas.twsgrace[n_p-1:nTrain])
-    print 'Testing: predicted vs. grace_raw', pearsonr(gldas.twsnldas[nTrain:nEnd]-predAll[nTrain-n_p+1:nEnd-n_p+1], gldas.twsgrace[nTrain:nEnd]) 
-    print 'Testing: gldas vs. grace_raw', pearsonr(gldas.twsnldas[nTrain:nEnd], gldas.twsgrace[nTrain:nEnd])
-    print '------------------------------------------------------------------------------------'
+    print('All: predicted vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nEnd]-predAll[:nEnd-n_p+1], gldas.twsgrace[n_p-1:nEnd]))
+    print('All: gldas vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nEnd], gldas.twsgrace[n_p-1:nEnd]))
+    print('Training: predicted vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nTrain]-predAll[:nTrain-n_p+1], gldas.twsgrace[n_p-1:nTrain]))
+    print('Training: gldas vs. grace_raw', pearsonr(gldas.twsnldas[n_p-1:nTrain], gldas.twsgrace[n_p-1:nTrain]))
+    print('Testing: predicted vs. grace_raw', pearsonr(gldas.twsnldas[nTrain:nEnd]-predAll[nTrain-n_p+1:nEnd-n_p+1], gldas.twsgrace[nTrain:nEnd])) 
+    print('Testing: gldas vs. grace_raw', pearsonr(gldas.twsnldas[nTrain:nEnd], gldas.twsgrace[nTrain:nEnd]))
+    print('------------------------------------------------------------------------------------')
 
     sns.set_style("white")
     fig=plt.figure(figsize=(6,3), dpi=250)
@@ -933,9 +933,9 @@ def doTesting(model, label, gldas, X_train, X_test, Y_test, Xa_train=None, Xa_te
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
     T0 = 2002+4.0/12
-    rngTrain = T0+np.array(range(n_p-1,nTrain))/12.0
-    rngTest = T0+np.array(range(nTrain, nEnd))/12.0
-    rngFull = T0+np.array(range(n_p-1,nEnd))/12.0
+    rngTrain = T0+np.array(list(range(n_p-1,nTrain)))/12.0
+    rngTest = T0+np.array(list(range(nTrain, nEnd)))/12.0
+    rngFull = T0+np.array(list(range(n_p-1,nEnd)))/12.0
     ax.plot(rngTrain, gldas.twsnldas[n_p-1:nTrain]-predAll[:nTrain-n_p+1], '--', color='#2980B9', label='CNN Train')
     ax.plot(rngTrain, gldas.twsgrace[n_p-1:nTrain], '-', color='#7D3C98', label='GRACE Train')
     ax.plot(rngTest, gldas.twsnldas[nTrain:nEnd]-predAll[nTrain-n_p+1:nEnd-n_p+1], '--o', color='#2980B9', label='CNN Test',markersize=3.5)

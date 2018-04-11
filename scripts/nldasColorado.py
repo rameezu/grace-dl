@@ -92,7 +92,7 @@ class NLDASData():
         bryfile = '{0}/bdy/{1}.bdy'.format(self.dataroot, self.watershed)
         
         extents = self.getBasinPixels(bryfile)    
-        print('basin extents is ', extents)
+        print(('basin extents is ', extents))
         self.mask = self.generateMask(bryfile)    
         #extract cells inside mask
         self.validCells = np.where(self.mask==1)
@@ -109,7 +109,7 @@ class NLDASData():
         #align nldas data with grace period
         #from 2002/04 to 2016/12 (note I need to use +3 because the zero-based index
         self.nldastws = self.nldastwsB[(2002-1979)*12+3:,:]
-        print(self.nldastws.shape)
+        print((self.nldastws.shape))
         
     
     def getBasinPixels(self, bryfile):
@@ -401,6 +401,6 @@ def main():
     nldas = NLDASData(watershed='colorado')
     nldas.loadStudyData(reloadData=False)    
     Xtrain,Ytrain,Xtest,Ytest,Xval = nldas.formMatrix2D(gl=grace, n_p=3, masking=True, nTrain=140)
-    print(Xtrain.shape)
+    print((Xtrain.shape))
 if __name__ == "__main__":
     main()

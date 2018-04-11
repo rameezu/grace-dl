@@ -17,10 +17,10 @@ class ProcessIndia():
             self.id = 0
             for afile in allfiles:
                 afile = '/'.join([dataRoot, afile])
-                print 'processing,', afile
+                print('processing,', afile)
                 self.parseCSV(afile)
-            print self.dfwellInfo.shape
-            print self.dfAll.shape
+            print(self.dfwellInfo.shape)
+            print(self.dfAll.shape)
             np.save('india.npy', [self.dfAll, self.dfwellInfo])
         else:
             self.dfAll, self.dfwellInfo = np.load('india.npy')
@@ -69,7 +69,7 @@ class ProcessIndia():
         #get a list of unique well names
         wellnames = pd.Index(df['WLCODE']).unique()
         for item in wellnames:
-            print item
+            print(item)
             #query all records for the current well
             welldf = df[df.WLCODE == item]            
             ADD=True
@@ -105,7 +105,7 @@ class ProcessIndia():
                                                           'lon':row['LON']}, ignore_index=True)
 
                 self.id+=1
-                print self.id
+                print(self.id)
          
         return df
     

@@ -114,7 +114,7 @@ class GRACEData():
             return (d1.year - d2.year) * 12 + d1.month - d2.month +1
         
         nmonths = diff_month(datetime(2002,4,1), datetime(2017,6,1))
-        print 'number of grace months in the dataset=', nmonths
+        print('number of grace months in the dataset=', nmonths)
         monthind = np.arange(nmonths)        
         #Remove the missing months (19 of them)
         #2002-06;2002-07;2003-06;2011-01;2011-06;2012-05;2012-10;2013-03;2013-08;
@@ -141,7 +141,7 @@ class GRACEData():
         # 2004/1 to 2009/12 temporal mean already removed
         self.getMask(maskfile)
         self.getSF(scalefile)
-        print 'grace extents=', extents
+        print('grace extents=', extents)
         ncells = (extents[1]-extents[0])*(extents[3]-extents[2])
         twsData = np.zeros((len(monthind), ncells))     
         
@@ -164,7 +164,7 @@ class GRACEData():
             twsData[i,:] = res
        
         #use a dataframe here to do linear interpolation
-        newIndex = range(nmonths) 
+        newIndex = list(range(nmonths)) 
         df = pd.DataFrame(twsData, index= monthind)        
         df = df.reindex(newIndex)      
         df = df.interpolate(method='linear')
@@ -276,7 +276,7 @@ class NDVIData():
 
     def loadNDVI(self, extents, startYear=2002, endYear=2016):
         nmonths = (endYear-startYear+1)*12
-        print 'ndvi extents', extents
+        print('ndvi extents', extents)
         ndviData = np.zeros((nmonths, extents[3]-extents[2], extents[1]-extents[0]))
         counter=0
         scalefactor = 1e-4
@@ -326,14 +326,14 @@ class GLDASData():
         
         bryfile = '{0}/bdy/{1}.bdy'.format(self.dataroot, self.watershed)
         extents = self.getBasinPixels(bryfile)    
-        print 'basin extents is ', extents
+        print('basin extents is ', extents)
         self.mask, xv, yv = self.generateMask(bryfile)    
-        print 'mask size', self.mask.shape
+        print('mask size', self.mask.shape)
         #
         bryfileIn = '{0}/bdy/{1}.bdy'.format(self.dataroot, self.watershedInner) 
         self.innermask = self.generateInnerMask(bryfileIn, extents, xv, yv)
 
-        print 'inner mask size', self.innermask.shape
+        print('inner mask size', self.innermask.shape)
         #for debugging
         '''
         plt.figure()
@@ -341,32 +341,32 @@ class GLDASData():
         plt.savefig('nldasmask.png')
         '''
         if reloadData:  
-            print 'loading sm data ...'
+            print('loading sm data ...')
             smMat = self.extractVar('sm200', extents, self.startYear,self.endYear)
             #form gldas_mask (this mask only removes the ocean cells)
             #as03082018, this probably is not used
             self.gldasmask = np.zeros((extents[3]-extents[2], extents[1]-extents[0]))+1.0
             dd = np.reshape(smMat[0,:], (self.gldasmask.shape))
             self.gldasmask[np.isnan(dd)]=0.0
-            print smMat.shape
-            print 'loading canopy data ...'
+            print(smMat.shape)
+            print('loading canopy data ...')
             cpMat = self.extractVar('canopy', extents, self.startYear,self.endYear)
-            print cpMat.shape
-            print 'loading snow water data ...'
+            print(cpMat.shape)
+            print('loading snow water data ...')
             snMat = self.extractVar('snow', extents, self.startYear,self.endYear)
-            print snMat.shape
-            print 'load precip data ...'
+            print(snMat.shape)
+            print('load precip data ...')
             pMat = self.extractVar('precip', extents, self.startYear, self.endYear)             
             #calculate tws
             tws = smMat+cpMat+snMat
             self.nldastwsB = tws
-            print pMat.shape
+            print(pMat.shape)
             self.precipMat = pMat/10.0 #convert to cm
             isTrendRemoval=True
             if isTrendRemoval:
                 tt = np.arange(self.precipMat.shape[0])
                 X = tt.reshape(len(tt), 1)
-                print X.shape
+                print(X.shape)
                 y = self.precipMat
                 y[np.isnan(y)]=0.0
                 regr = skpl.LinearRegression(fit_intercept=True)
@@ -415,7 +415,7 @@ class GLDASData():
             self.validCells = np.where(res==1)
             self.nvalidCells = len(self.validCells[0])
 
-        print 'number of valid cells=%s' % self.nvalidCells        
+        print('number of valid cells=%s' % self.nvalidCells)        
 
         
     def extractVar(self, varname, extents, startYear=2000, endYear=2016):
@@ -494,7 +494,7 @@ class GLDASData():
         
         dx = (np.max(locx) - np.min(locx))/N
         dy = (np.max(locy) - np.min(locy))/N
-        print 'dx,dy', dx, dy
+        print('dx,dy', dx, dy)
         xv,yv = np.meshgrid(np.linspace((ix1)*cellsize+0.5*dx,(ix0)*cellsize+0.5*dx, N),
                             np.linspace((iy1)*cellsize+0.5*dy,(iy0)*cellsize+0.5*dy, N))
 
@@ -674,7 +674,7 @@ class GLDASData():
             for i in range(self.nvalidCells):
                 gldas_grace_R[i],_ = stats.pearsonr(gldasArr[:,i], self.graceArr[:,i])
         else:
-            print 'in formoutarray, validation only', gldasArr.shape[0]-nTrain+1
+            print('in formoutarray, validation only', gldasArr.shape[0]-nTrain+1)
             for i in range(self.nvalidCells):
                 gldas_grace_R[i],_ = stats.pearsonr(gldasArr[nTrain:,i], self.graceArr[nTrain:,i])
             
@@ -779,7 +779,7 @@ class GLDASData():
         #self.outArr = self.formatOutArray(mat, gmat, gextents, masking, nTrain=nTrain)
         self.outArr = self.formatOutArray(mat, gmat, gextents, masking)
         if self.watershed in ['india', 'indiabang']:
-            print 'negative corr cells', np.where(self.gldas_grace_R<0)
+            print('negative corr cells', np.where(self.gldas_grace_R<0))
             
         # calculate the spatially averaged tws timeseries here
         self.twsgrace = self.getTWSAvg(gmat, gextents)
@@ -884,8 +884,8 @@ class GLDASData():
         mat = nv.ndviData
         if len(mat.shape)==4: 
             mat = mat[0,:,:,:] 
-        print 'number of months=%s' % self.nmonths
-        print mat.shape
+        print('number of months=%s' % self.nmonths)
+        print(mat.shape)
         #set up matrices for conv layers
         bigarr = np.zeros((mat.shape[0], self.nvalidCells), dtype=np.float64)
         for i in range(mat.shape[0]):
@@ -973,7 +973,7 @@ class GLDASData():
                 if masking:
                     Xg[i, :, :, j] =np.multiply(Xg[i, :, :, j],self.mask)
 
-        print Xg.shape                  
+        print(Xg.shape)                  
         '''        
         img = Xg[0, :, :, 0]
         plt.figure()
@@ -1020,11 +1020,11 @@ class GLDASData():
                 locy[counter] = float(fields[0])        
                 counter+=1
         
-        print 'in get basin bound', self.extents     
+        print('in get basin bound', self.extents)     
         xcellsize = float((self.extents[1]-self.extents[0]))/N
         ycellsize = float((self.extents[3]-self.extents[2]))/N
         #shift relative to the left-lower corder of study area
-        print xcellsize, ycellsize
+        print(xcellsize, ycellsize)
         maskX = (locx - ((self.extents[0])*cellsize+xllcorner))/(cellsize*xcellsize)
         maskY = (locy - ((self.extents[2])*cellsize+yllcorner))/(cellsize*ycellsize)
         
@@ -1058,10 +1058,10 @@ class GLDASData():
         #period is from 2002/04 to 2016/12
         nMonth=inArr.shape[0]
         #form season indices
-        seasonind=[[range(8, nMonth, 12), range(9, nMonth, 12), range(10, nMonth,12)], 
-                   [range(0, nMonth, 12), range(1, nMonth, 12), range(11, nMonth, 12)],
-                   [range(2, nMonth, 12), range(3, nMonth, 12), range(4, nMonth, 12)], 
-                   [range(5, nMonth, 12), range(6, nMonth, 12), range(7, nMonth, 12)] 
+        seasonind=[[list(range(8, nMonth, 12)), list(range(9, nMonth, 12)), list(range(10, nMonth,12))], 
+                   [list(range(0, nMonth, 12)), list(range(1, nMonth, 12)), list(range(11, nMonth, 12))],
+                   [list(range(2, nMonth, 12)), list(range(3, nMonth, 12)), list(range(4, nMonth, 12))], 
+                   [list(range(5, nMonth, 12)), list(range(6, nMonth, 12)), list(range(7, nMonth, 12))] 
                    ]
         meanErr = np.zeros((4,outArr.shape[1], outArr.shape[2]))
         labels=['DJF', 'MAM', 'JJA', 'SON']
@@ -1075,7 +1075,7 @@ class GLDASData():
         for i in range(4):
             ids = [x for item in seasonind[i] for x in item]
             meanErr[i,:,:] = np.mean(outArr[ids,:,:], axis=0)      
-            print meanErr.shape      
+            print(meanErr.shape)      
             temp= meanErr[i,:,:]
             pp = np.zeros((outArr.shape[1], outArr.shape[2]))+np.NaN
             pp[self.actualvalidCells] = temp[self.actualvalidCells] 
@@ -1088,8 +1088,8 @@ class GLDASData():
             #as 03132018, remove zero cells
             pvec = dd[self.actualvalidCells]
             pvec = pvec[np.where(pvec!=0.0)]
-            print pvec.shape
-            print 'mean={0}, skew{1}'.format(np.mean(pvec), stats.skew(pvec))
+            print(pvec.shape)
+            print('mean={0}, skew{1}'.format(np.mean(pvec), stats.skew(pvec)))
             sns.distplot(pvec, label=labels[i], ax=axes[i,1])
             axes[i,0].text(0.02, 0.85, figlabel[counter], fontsize=10,  transform=axes[i,0].transAxes) #add text
             counter+=1       
@@ -1116,7 +1116,7 @@ class GLDASData():
         #assign wells to grids
         xcellsize = float((self.extents[1]-self.extents[0]))/N
         ycellsize = float((self.extents[3]-self.extents[2]))/N
-        print xcellsize, ycellsize
+        print(xcellsize, ycellsize)
         #shift relative to the lower left order of study area 
         lon = (gwdb.dfwellInfo['Longitude'].values- (xllcorner + self.extents[0]*cellsize))/(cellsize*xcellsize)
         lat = (gwdb.dfwellInfo['Latitude'].values - (yllcorner + self.extents[2]*cellsize))/(cellsize*ycellsize)
@@ -1134,7 +1134,7 @@ class GLDASData():
         '''
         inArr = self.formatInArray(self.nldastws, True)
         nx,ny = inArr.shape[1],inArr.shape[2]
-        print 'grid dimension:{0},{1}'.format(nx,ny)
+        print('grid dimension:{0},{1}'.format(nx,ny))
         #form monthly index from 2005/1 to 2013/11, use MS to generate start of month
         rng = gwdb.rng
         if reLoad:
@@ -1183,7 +1183,7 @@ class GLDASData():
             self.gwanomalyAvgDF, self.gwanomalyInd = np.load('waterlvlavg{0}.npy'.format(self.watershed))
         self.gwvalidcells = np.where(self.gwanomalyInd>0)
         
-        print 'shape of gridded gw anomaly matrix', self.gwanomalyAvgDF.shape
+        print('shape of gridded gw anomaly matrix', self.gwanomalyAvgDF.shape)
             
 def main():
     '''
@@ -1194,7 +1194,7 @@ def main():
     watershed='indiabig'
     #and the actual study area
     watershedinner='indiabang'
-    print 'start processing'
+    print('start processing')
     grace = GRACEData(reLoad=False, watershed=watershed)
     gldas = GLDASData(watershed=watershed, watershedInner=watershedinner)
     gldas.loadStudyData(reloadData=False, masking=isMasking)
@@ -1209,7 +1209,7 @@ def main():
     india = ProcessIndiaDB(reLoad=False)
     #gldas.plotWells(india.dfwellInfo, gl=grace, state='PB')
     gldas.getGridAverages(india, reLoad=True)
-    print 'finished processing'
+    print('finished processing')
 
 if __name__ == "__main__":
     main()
