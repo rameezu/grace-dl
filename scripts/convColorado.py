@@ -72,7 +72,7 @@ def seqCNN1(seq_len=3, summary=False, backend='tf'):
     model.add(Reshape((N,N)))
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
         #plot_model(model, to_file='cnn1model.png', show_shapes=True)
 
     return model
@@ -99,7 +99,7 @@ def seqCNNVGG16(seq_len=6, summary=False,backend='tf'):
     model = Model(input=input, output=x)
  
     if summary:
-        print(model.summary())
+        print((model.summary()))
  
     return model
 
@@ -122,7 +122,7 @@ def seqCNN2(seq_len=3):
     model.add(Flatten())
     model.add(Reshape((N,N)))
 
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -145,7 +145,7 @@ def seqCNN3(seq_len=3):
     model.add(Flatten())
     model.add(Reshape((N,N)))
 
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -163,7 +163,7 @@ def lstm1(seq_len=3):
     model.add(Flatten())
     model.add(Reshape((N,N)))
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -177,14 +177,14 @@ def lstm2(seq_len=3):
     model.add(LSTM(3))
     model.add(Flatten())
     model.add(Reshape((N,N)))
-    print(model.summary())
+    print((model.summary()))
     return model
 
 def lstm3(seq_len=3):
     model = Sequential()
     model.add(LSTM(seq_len, input_shape=(N,N,seq_len, 1), return_sequences=True))
     model.add(TimeDistributed(Dense(1)))
-    print(model.summary)
+    print((model.summary))
     return model
 
 def lstm4(seq_len=3):
@@ -204,7 +204,7 @@ def lstm4(seq_len=3):
     model.add(Flatten())
     model.add(Reshape((N,N)))
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -260,7 +260,7 @@ def uNet1(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -325,7 +325,7 @@ def uNet2(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -399,7 +399,7 @@ def uNet3(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -449,7 +449,7 @@ def uNet4(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
 
     return model
 
@@ -516,7 +516,7 @@ def uNet5(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -594,7 +594,7 @@ def uNet6(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -674,7 +674,7 @@ def uNet7(seq_len=3):
     
     model = Model(input=inputs, output=reshape)
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -715,7 +715,7 @@ def dilatedOrg(input_width=500, input_height=500):
     # Note: this layer has linear activations, not ReLU
     model.add(Convolution2D(21, 1, 1, activation='linear', name='fc-final'))
 
-    print(model.summary())
+    print((model.summary()))
     # model.layers[-1].output_shape == (None, 16, 16, 21)
     return model
 
@@ -768,7 +768,7 @@ def dilated1(seq_len=3):
     model.add(Reshape((N,N)))
     # model.layers[-1].output_shape == (None, 16, 16, 21)
     
-    print(model.summary())
+    print((model.summary()))
     
     return model
 
@@ -863,11 +863,11 @@ def augment(X, Y, seq_len, n=1000):
     newY = np.zeros((n, 64, 64))
     for i in range(n):
 
-        sampleidx = random.choice(range(num_samples))
+        sampleidx = random.choice(list(range(num_samples)))
         augX = X[sampleidx,:,:,:]       
-        xidx = random.choice(range(64))    
-        yidx = random.choice(range(64))     
-        valueidx = random.choice(range(3))    
+        xidx = random.choice(list(range(64)))    
+        yidx = random.choice(list(range(64)))     
+        valueidx = random.choice(list(range(3)))    
         delta = np.random.uniform(np.mean(X), np.random.uniform(low=-0.1, high=0.1))     
         
         #val = X[sampleidx, xidx, yidx, valueidx] + delta  
@@ -924,9 +924,9 @@ def correlationSummary(corrections, train_end_idx=104, test_end_idx=140):
     baseline_train_corr,_ = scipy.stats.pearsonr(nldas_train, grace_train)
     baseline_test_corr,_ = scipy.stats.pearsonr(nldas_test, grace_test)
     
-    print('Baseline Total Corr=%s' % baseline_total_corr)
-    print('Baseline Train Corr=%s' % baseline_train_corr)
-    print('Baseline Test Corr=%s' % baseline_test_corr)
+    print(('Baseline Total Corr=%s' % baseline_total_corr))
+    print(('Baseline Train Corr=%s' % baseline_train_corr))
+    print(('Baseline Test Corr=%s' % baseline_test_corr))
     
     corrected = np.subtract(nldas_obs, corrections)
     corrected_train = corrected[:train_end_idx]
@@ -936,9 +936,9 @@ def correlationSummary(corrections, train_end_idx=104, test_end_idx=140):
     model_train_corr,_ = scipy.stats.pearsonr(corrected_train, grace_train)
     model_test_corr,_ = scipy.stats.pearsonr(corrected_test, grace_test)
     
-    print('Model Total Corr=%s' % model_total_corr)
-    print('Model Train Corr=%s' % model_train_corr)
-    print('Model Test Corr=%s' % model_test_corr)
+    print(('Model Total Corr=%s' % model_total_corr))
+    print(('Model Train Corr=%s' % model_train_corr))
+    print(('Model Test Corr=%s' % model_test_corr))
     
     plt.plot(nldas_train, '-', grace_train, '.-', nldas_test, '.', grace_test, '--')
     
@@ -982,11 +982,11 @@ def CNNDriver(watershedName='colorado', retrain=False):
     
     mse = np.zeros((Y_test.shape[0]))
     ypred = model.predict(X_test, batch_size=batch_size, verbose=0)
-    print(ypred.shape)
+    print((ypred.shape))
     for i in range(ypred.shape[0]):        
         mse[i]=RMSE(Y_test[i,:,:], ypred[i,:,:])
         
-    print('RMSE=%s' % np.mean(mse))
+    print(('RMSE=%s' % np.mean(mse)))
     
     '''
     nse = np.zeros((Y_test.shape[0]))

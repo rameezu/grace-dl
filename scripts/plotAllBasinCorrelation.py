@@ -42,7 +42,7 @@ def basinaverage(ax):
     counter=0
     for item in models:
         nTrain,rngTrain,rngTest,rngFull, arrTrain,graceTrain,arrTest,graceTest, noah = pkl.load(open('basincorr{0}.pkl'.format(item)))
-        print graceTrain.shape, graceTest.shape, rngFull.shape
+        print(graceTrain.shape, graceTest.shape, rngFull.shape)
 
         if counter==0:
             ax.plot(rngFull, np.concatenate([graceTrain, graceTest]), '-o', markersize=4, color='#F39C12', linewidth=2.0, alpha=1.0, label='GRACE')

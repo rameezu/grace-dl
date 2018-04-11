@@ -39,7 +39,7 @@ def main():
         history = np.load('{0}history.npy'.format(modelname))
         history = history.tolist()
         loss =  history['rmse']
-        print modelname, loss
+        print(modelname, loss)
         plt.plot(loss, pltstyle[counter], linewidth=1.5, label=labels[counter])        
         counter+=1
     plt.xlabel('Epoch')

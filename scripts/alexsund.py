@@ -63,7 +63,7 @@ def seqCNN1(seq_len=6, summary=False,backend='tf'):
     model.add(Reshape((N,N)))
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
         plot_model(model, to_file='cnn1model.png')
 
     return model
@@ -87,7 +87,7 @@ def seqCNN3(seq_len=3, summary=False,backend='tf'):
     model.add(Reshape((N,N)))
 
     if summary:
-        print(model.summary())
+        print((model.summary()))
 
     return model
 
@@ -194,17 +194,17 @@ def CNNDriver(watershedName, retrain=False):
     
     mse = np.zeros((Y_test.shape[0]))
     ypred = model.predict(X_test, batch_size=batch_size, verbose=0)
-    print ypred.shape
+    print(ypred.shape)
     for i in range(ypred.shape[0]):        
         mse[i]=RMSE(Y_test[i,:,:], ypred[i,:,:])
         
-    print 'RMSE=%s' % np.mean(mse)
+    print('RMSE=%s' % np.mean(mse))
     #comment out the following to calculate basin average time series
 
     ytrain = model.predict(X_train, batch_size=batch_size, verbose=0)
     twsTrain = calculateBasinAverage(nldas, ytrain)    
     for item in twsTrain:
-        print item
+        print(item)
     
     twsPred = calculateBasinAverage(nldas, ypred)    
     twsIn = calculateBasinAverage(nldas, Xval)
@@ -212,7 +212,7 @@ def CNNDriver(watershedName, retrain=False):
     twsgrace = nldas.twsgrace[-Y_test.shape[0]:]
 
     for i in range(len(twsPred)):
-        print '%s' % (twsPred[i])
+        print('%s' % (twsPred[i]))
         
     #plotOutput(nldas, ypred, Y_test, X_test)
 
