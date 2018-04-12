@@ -143,7 +143,7 @@ def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain
 
     Xp_train, Xp_test = nldas.formPrecip2D(n_p=n_p, masking=isMasking, nTrain=nTrain)
 
-    backend='tf'
+    model = m.compositeCNN()
 
     solver=3
     if retrain:     
@@ -172,54 +172,6 @@ def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain
 
     doTesting(model, 'comp', nldas, X_train, X_test, Y_test, Xp_train, Xp_test, n_p=n_p, nTrain=nTrain)
 
-def CNN1(inputLayer):
-    '''
-    for use with composite model
-    '''
-    x = Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu')(inputLayer)
-    x = Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu')(x)
-    x = MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu')(x)
-    x = Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu')(x)
-    x = MaxPooling2D(pool_size=(2, 2))(x)
-    
-    x = Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu')(x)
-    x = Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu')(x)    
-    x = MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu')(x)    
-    x = UpSampling2D(size=(8, 8))(x)
-        
-    x = Conv2D(1, kernel_size=(1, 1), padding='same', activation='tanh')(x)
-    x = Flatten()(x)
-
-    x = Reshape((N,N))(x)    
-    
-    return x
-
-def CNNvgg16(inputLayer):
-    '''
-    the transfer learning model for use with composite model
-    '''
-    input_shape=[N, N, inputLayer._keras_shape[3]] # l, h, w, c
-    print('input shape = ', input_shape)
-    print(inputLayer._keras_shape)
-
-    model_vgg16_conv = VGG16(include_top=False, input_shape=input_shape, weights='imagenet')
-    for layer in model_vgg16_conv.layers:
-        layer.trainable = False
-        
-    output_vgg16_conv = model_vgg16_conv(inputLayer)
-    #Add the fully-connected layers 
-    x = Flatten(name='flatten')(output_vgg16_conv)
-    x = Dropout(0.2)(x)    
-    x = Dense(N*N, activation='tanh', name='fc1')(x)
-    x = Dropout(0.2)(x)
-    x = Reshape((N,N))(x)
-    
-    return x
-
 
 def CNNNDVICompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, modelOption=N, retrain=False):
     '''
@@ -235,46 +187,7 @@ def CNNNDVICompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, mod
     Xp_train, Xp_test = nldas.formPrecip2D(n_p=n_p, masking=isMasking, nTrain=nTrain)
     Xnd_train, Xnd_test = nldas.formNDVI2D(ndvi, n_p=n_p, masking=isMasking, nTrain=nTrain)
 
-    backend='tf'
-    if backend == 'tf':
-        input_shape=(N, N, n_p) # l, h, w, c
-    else:
-        input_shape=(n_p, N, N) # c, l, h, w
-
-
-    ioption=modelOption
-    if ioption==1:
-        inLayer = Input(shape=input_shape, name='input')
-        outLayer = Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu')(inLayer)
-            
-        inputPLayer = Input(shape=(N,N,n_p), name='inputP')
-        outPLayer = Conv2D(64, kernel_size=(3, 3), padding='same',activation='relu')(inputPLayer)
-    
-        inputNDVILayer = Input(shape=(N,N,n_p), name='inputNDVI')
-        outNDVILayer = Conv2D(64, kernel_size=(3, 3), padding='same',activation='relu')(inputNDVILayer)
-
-        x = keras.layers.concatenate([outPLayer, outNDVILayer, outLayer], axis=-1)            
-        x = CNN1(x)
-        label = 'ndvicnn'
-    elif ioption==2:
-        inLayer = Input(shape=input_shape, name='input')
-        outLayer = Conv2D(1, kernel_size=(3, 3), padding='same', activation='relu')(inLayer)
-            
-        inputPLayer = Input(shape=(N,N,n_p), name='inputP')
-        outPLayer = Conv2D(1, kernel_size=(3, 3), padding='same',activation='relu')(inputPLayer)
-    
-        inputNDVILayer = Input(shape=(N,N,n_p), name='inputNDVI')
-        outNDVILayer = Conv2D(1, kernel_size=(3, 3), padding='same',activation='relu')(inputNDVILayer)
-        x = keras.layers.concatenate([outPLayer, outNDVILayer, outLayer], axis=-1)            
-
-        x = CNNvgg16(x)
-        
-        label = 'ndvivgg'
-    
-                                                                                                        
-    model = Model(inputs=[inputPLayer, inputNDVILayer, inLayer], outputs=[x])
-    print((model.summary()))
-    plot_model(model, to_file='{0}model.png'.format(label), show_shapes=True)
+    model = m.compositeCNNNDVI(n_p=n_p, modelOption=modelOption, N=N)
     
     solver=3
     if retrain:     
@@ -315,10 +228,10 @@ def CNNDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain=False, m
     ioption= modelOption
     
     if ioption==1:
-        model = vcg16CNN(seq_len=n_p, summary=True)
+        model = m.vcg16CNN(seq_len=n_p, summary=True)
         label='vgg16' #should be vgg16
     elif ioption==2:
-        model = seqCNN3(n_p, summary=True)
+        model = m.seqCNN3(n_p, summary=True)
         label = 'simple'
         
     X_train,Y_train,X_test,Y_test,Xval = nldas.formMatrix2D(gl=grace, n_p=n_p, 
@@ -358,7 +271,7 @@ def UnetDriver(watershedName, watershedInner, retrain=False):
 
     n_p = 3
     nTrain=106
-    model = getUnetModel(Ns=N, seq_len=3, summary=True)
+    model = m.unetModel(Ns=N, seq_len=3, summary=True)
     X_train,Y_train,X_test,Y_test,Xval = nldas.formMatrix2D(gl=grace, n_p=n_p, masking=True, nTrain=nTrain)
     
     solver=1
