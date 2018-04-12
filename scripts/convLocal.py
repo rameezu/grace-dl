@@ -99,7 +99,7 @@ def LSTMDriver(watershedName, watershedInner, retrain=False):
     nldas.loadStudyData(reloadData=False)    
 
     n_p = 3
-    model = m.compositeLSTM(n_p=n_p, summary=True, N=120)
+    model = m.compositeLSTM(n_p=n_p, summary=True, N=N)
     X_train,Y_train,X_test,Y_test = nldas.formMatrix2DLSTM(gl=grace, n_p=n_p, masking=True, nTrain=106)
 
     solver=1
@@ -143,7 +143,7 @@ def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain
 
     Xp_train, Xp_test = nldas.formPrecip2D(n_p=n_p, masking=isMasking, nTrain=nTrain)
 
-    model = m.compositeCNN()
+    model = m.compositeCNN(N=N)
 
     solver=3
     if retrain:     
@@ -228,10 +228,10 @@ def CNNDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain=False, m
     ioption= modelOption
     
     if ioption==1:
-        model = m.vgg16CNN(seq_len=n_p, summary=True)
+        model = m.vgg16CNN(seq_len=n_p, summary=True, N=N)
         label='vgg16' #should be vgg16
     elif ioption==2:
-        model = m.seqCNN3(n_p, summary=True)
+        model = m.seqCNN3(n_p, summary=True, N=N)
         label = 'simple'
         
     X_train,Y_train,X_test,Y_test,Xval = nldas.formMatrix2D(gl=grace, n_p=n_p, 
