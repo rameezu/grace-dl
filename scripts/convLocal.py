@@ -228,7 +228,7 @@ def CNNDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain=False, m
     ioption= modelOption
     
     if ioption==1:
-        model = m.vcg16CNN(seq_len=n_p, summary=True)
+        model = m.vgg16CNN(seq_len=n_p, summary=True)
         label='vgg16' #should be vgg16
     elif ioption==2:
         model = m.seqCNN3(n_p, summary=True)
@@ -641,7 +641,7 @@ def doTesting(model, label, gldas, X_train, X_test, Y_test, Xa_train=None, Xa_te
 
         plt.savefig('pixeltest.png')
     '''
-def main(retrain=False, modelnum=1, modeloption=None):
+def main(retrain=False, modelnum=1, modeloption=1):
     watershed='indiabig'
     watershedActual = 'indiabang'
     n_p = 3 
@@ -659,7 +659,7 @@ def main(retrain=False, modelnum=1, modeloption=None):
         CNNNDVICompositeDriver(watershedName=watershed, watershedInner=watershedActual, retrain=retrain, modelOption=modeloption)
         
 if __name__ == "__main__":
-    main(retrain=True, modelnum=1)#vgg16
+    #main(retrain=True, modelnum=1)#vgg16
     main(retrain=True, modelnum=2)#simple
     main(retrain=True, modelnum=3)#composite, P
     main(retrain=True, modelnum=4)
