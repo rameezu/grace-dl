@@ -12,3 +12,8 @@ weights/*
 
 
 data.zip
+scripts/graceindiabig.npy
+scripts/indiabig_twsdata.npy
+scripts/NDVI_indiabig.npy
+scripts/__pycache__/
+scripts/meanerr.png

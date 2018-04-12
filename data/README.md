@@ -22,10 +22,13 @@ snow - NOAH snow water storage (SWS)
 
 tws - Grace data (RL-05?)
 
+grace - [ftp://podaac.jpl.nasa.gov/allData/tellus/L3/mascon/RL05/JPL/CRI/netcdf/]
 
 GWSA_13Nove15Modified.csv - India sensor data provided by Bhanja 2016
 
 observations.txt - used to compute model correlations for colorado dataset [Not Used]
+
+
 
 
 

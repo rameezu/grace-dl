@@ -96,10 +96,10 @@ class GRACEData():
     '''
     def __init__(self, watershed, reLoad=False):        
         if reLoad:
-            scalefile= '../nldas2/grace/CLM4.SCALE_FACTOR.JPL.MSCNv01CRIv01.nc'
-            twsfile= '../nldas2/grace/GRCTellus.JPL.200204_201706.GLO.RL05M_1.MSCNv02CRIv02.nc'
-            maskfile= '../nldas2/grace/LAND_MASK.CRIv01.nc'
-            bryfile = './bdy/%s.bdy' % (watershed)
+            scalefile= '../data/grace/CLM4.SCALE_FACTOR.JPL.MSCNv01CRIv01.nc'
+            twsfile= '../data/grace/GRCTellus.JPL.200204_201706.GLO.RL05M_1.MSCNv02CRIv02.nc'
+            maskfile= '../data/grace/LAND_MASK.CRIv01.nc'
+            bryfile = '../data/bdy/%s.bdy' % (watershed)
             self.extents = self.getExtent(bryfile)
             self.twsData, self.nmonths, self.monthind = self.loadTWS(twsfile, scalefile, maskfile, self.extents)
             np.save('grace{0}'.format(watershed), [self.twsData, self.nmonths, self.monthind, self.extents, self.lllon,self.lllat, self.cellsize])
@@ -238,7 +238,7 @@ class NDVIData():
     '''
     def __init__(self, watershed, reLoad=False):
         if reLoad:
-            bryfile = './bdy/%s.bdy' % (watershed)
+            bryfile = '../data/bdy/%s.bdy' % (watershed)
             self.extents = self.getExtent(bryfile)
             self.ndviData = self.loadNDVI(self.extents)
             np.save('NDVI_%s.npy'%watershed, [self.ndviData])
@@ -282,7 +282,7 @@ class NDVIData():
         scalefactor = 1e-4
         for iyear in range(startYear, endYear+1):
             for imon in range(1,13):
-                data = np.load('./ndvi/{:4d}{:02d}.npy'.format(iyear,imon))
+                data = np.load('../data/ndvi/{:4d}{:02d}.npy'.format(iyear,imon))
                 data = data.reshape(-1, data.shape[-1])     
                 data = data*scalefactor
                 #subset
@@ -309,7 +309,7 @@ class GLDASData():
         @param watershed, name of the watershed file (bigger area to avoid boundary effect)
         @param watershedInner, actual study area
         '''
-        self.dataroot = '.'
+        self.dataroot = '../data'
         self.startYear = startYear
         self.endYear = endYear
         self.watershed = watershed
@@ -1195,10 +1195,10 @@ def main():
     #and the actual study area
     watershedinner='indiabang'
     print('start processing')
-    grace = GRACEData(reLoad=False, watershed=watershed)
+    grace = GRACEData(reLoad=True, watershed=watershed)
     gldas = GLDASData(watershed=watershed, watershedInner=watershedinner)
-    gldas.loadStudyData(reloadData=False, masking=isMasking)
-    ndvi = NDVIData(reLoad=False, watershed=watershed) 
+    gldas.loadStudyData(reloadData=True, masking=isMasking)
+    ndvi = NDVIData(reLoad=True, watershed=watershed) 
     
     Xtrain,Ytrain,Xtest,Ytest,Xval = gldas.formMatrix2D(gl=grace, n_p=3, masking=isMasking, nTrain=106)
     Ptrain, Ptest = gldas.formPrecip2D(n_p=3, masking=isMasking, nTrain=106)
@@ -1206,7 +1206,7 @@ def main():
         
     gldas.seasonalError(grace, masking=isMasking)
     
-    india = ProcessIndiaDB(reLoad=False)
+    india = ProcessIndiaDB(reLoad=True)
     #gldas.plotWells(india.dfwellInfo, gl=grace, state='PB')
     gldas.getGridAverages(india, reLoad=True)
     print('finished processing')
