@@ -17,3 +17,7 @@ scripts/indiabig_twsdata.npy
 scripts/NDVI_indiabig.npy
 scripts/__pycache__/
 scripts/meanerr.png
+scripts/indiadb.npy
+scripts/waterlvlavgindiabig.npy
+scripts/.ipynb_checkpoints/
+.git
