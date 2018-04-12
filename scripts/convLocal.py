@@ -99,7 +99,7 @@ def LSTMDriver(watershedName, watershedInner, retrain=False):
     nldas.loadStudyData(reloadData=False)    
 
     n_p = 3
-    model = m.compositeLSTM(n_p=n_p, summary=True)
+    model = m.compositeLSTM(n_p=n_p, summary=True, N=120)
     X_train,Y_train,X_test,Y_test = nldas.formMatrix2DLSTM(gl=grace, n_p=n_p, masking=True, nTrain=106)
 
     solver=1
@@ -746,7 +746,8 @@ def main(retrain=False, modelnum=1, modeloption=None):
         CNNNDVICompositeDriver(watershedName=watershed, watershedInner=watershedActual, retrain=retrain, modelOption=modeloption)
         
 if __name__ == "__main__":
-    main(retrain=False, modelnum=2, modeloption=1)#vgg16
-    main(retrain=False, modelnum=2, modeloption=2)#simple
-    main(retrain=False, modelnum=3)#composite, P
-    main(retrain=False, modelnum=5, modeloption=1)#composite, NDVI
+    main(retrain=True, modelnum=1)#vgg16
+    main(retrain=True, modelnum=2)#simple
+    main(retrain=True, modelnum=3)#composite, P
+    main(retrain=True, modelnum=4)
+    main(retrain=True, modelnum=5)#composite, NDVI

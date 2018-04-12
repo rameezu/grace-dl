@@ -118,7 +118,7 @@ def vcg16CNN(seq_len=6, summary=False,backend='tf', N=64):
     return model
 
 from keras.applications.resnet50 import ResNet50
-def resnetCNN(seq_len=6, summary=False, backend='tf'), N=64:
+def resnetCNN(seq_len=6, summary=False, backend='tf', N=64):
     '''
     the resnet transfer learning model
     '''
@@ -192,7 +192,7 @@ def unetModel(Ns, seq_len=3, summary=False, N=64):
         print(model.summary())
     return model    
 
-def lstemModel(Ns, seq_len=3, backend='tf', N=64):
+def lstmModel(Ns, seq_len=3, backend='tf', N=64):
     if backend == 'tf':
         input_shape=(seq_len, Ns, Ns, 1) # samples, times, h, w, c
     else:
@@ -237,7 +237,7 @@ def compositeLSTM(n_p=None, summary=False, backend='tf', N=64):
     
     model = Model(inputs=main_input, outputs=[main_output])
     '''
-    model = getLSTMModel(Ns=N, seq_len=n_p)
+    model = lstmModel(Ns=N, seq_len=n_p, N=N)
     if summary:
         print(model.summary())
     return model
