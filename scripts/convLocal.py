@@ -9,7 +9,12 @@ import numpy as np
 np.random.seed(1989)
 import tensorflow as tf
 tf.set_random_seed(1989)
-sess = tf.Session()
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.3)
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+config.allow_soft_placement=True
+sess = tf.Session(config=config)
+
 import matplotlib
 matplotlib.use('Agg')
 
