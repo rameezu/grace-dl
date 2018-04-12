@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 class ProcessIndiaDB():
     def __init__(self, reLoad=False):
-        dataRoot = '.'
+        dataRoot = '../data'
         #dataRoot = '/home/alex/multitaskLearn'
         rng = pd.date_range('1/1/2005', periods=9, freq='AS')
         rng1 = rng.shift(5, 'M')
@@ -80,7 +80,7 @@ class ProcessIndiaDB():
         return df 
         
 def main():
-    india = ProcessIndiaDB(reLoad=False)
+    india = ProcessIndiaDB(reLoad=True)
     india.getAvg(30, 78, 0.5)
 if __name__ == "__main__":
     main()
