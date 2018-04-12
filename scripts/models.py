@@ -242,7 +242,7 @@ def compositeLSTM(n_p=None, summary=False, backend='tf', N=64):
         print(model.summary())
     return model
 
-def CNN1(inputLayer):
+def CNN1(inputLayer, N=64):
     '''
     for use with composite model
     '''
@@ -268,7 +268,7 @@ def CNN1(inputLayer):
     
     return x
 
-def CNNvgg16(inputLayer):
+def CNNvgg16(inputLayer, N=64):
     '''
     the transfer learning model for use with composite model
     '''
@@ -290,7 +290,7 @@ def CNNvgg16(inputLayer):
     
     return x
 
-def compositeCNNNVDI(n_p, modelOption, N=64):
+def compositeCNNNDVI(n_p, modelOption, N=64):
     backend='tf'
     if backend == 'tf':
         input_shape=(N, N, n_p) # l, h, w, c
@@ -310,7 +310,7 @@ def compositeCNNNVDI(n_p, modelOption, N=64):
         outNDVILayer = Conv2D(64, kernel_size=(3, 3), padding='same',activation='relu')(inputNDVILayer)
 
         x = keras.layers.concatenate([outPLayer, outNDVILayer, outLayer], axis=-1)            
-        x = CNN1(x)
+        x = CNN1(x, N)
         label = 'ndvicnn'
     elif ioption==2:
         inLayer = Input(shape=input_shape, name='input')
@@ -323,7 +323,7 @@ def compositeCNNNVDI(n_p, modelOption, N=64):
         outNDVILayer = Conv2D(1, kernel_size=(3, 3), padding='same',activation='relu')(inputNDVILayer)
         x = keras.layers.concatenate([outPLayer, outNDVILayer, outLayer], axis=-1)            
 
-        x = CNNvgg16(x)
+        x = CNNvgg16(x, N)
         
         label = 'ndvivgg'
     
@@ -332,6 +332,8 @@ def compositeCNNNVDI(n_p, modelOption, N=64):
     print((model.summary()))
     plot_model(model, to_file='{0}model.png'.format(label), show_shapes=True)
     
+    return model
+
 def compositeCNN(n_p=None, summary=False, backend='tf', N=64):
     if backend == 'tf':
         input_shape=(N, N, n_p) # l, h, w, c

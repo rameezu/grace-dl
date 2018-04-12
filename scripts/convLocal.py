@@ -148,7 +148,7 @@ def CNNCompositeDriver(watershedName, watershedInner, n_p=3, nTrain=125, retrain
 
     Xp_train, Xp_test = nldas.formPrecip2D(n_p=n_p, masking=isMasking, nTrain=nTrain)
 
-    model = m.compositeCNN(N=N)
+    model = m.compositeCNN(n_p=n_p, N=N)
 
     solver=3
     if retrain:     
@@ -276,7 +276,7 @@ def UnetDriver(watershedName, watershedInner, retrain=False):
 
     n_p = 3
     nTrain=106
-    model = m.unetModel(Ns=N, seq_len=3, summary=True)
+    model = m.unetModel(Ns=N, seq_len=3, summary=True, N=N)
     X_train,Y_train,X_test,Y_test,Xval = nldas.formMatrix2D(gl=grace, n_p=n_p, masking=True, nTrain=nTrain)
     
     solver=1
@@ -665,7 +665,7 @@ def main(retrain=False, modelnum=1, modeloption=1):
         
 if __name__ == "__main__":
     #main(retrain=True, modelnum=1)#vgg16
-    main(retrain=True, modelnum=2)#simple
-    main(retrain=True, modelnum=3)#composite, P
-    main(retrain=True, modelnum=4)
+    #main(retrain=True, modelnum=2)#simple
+    #main(retrain=True, modelnum=3)#composite, P
+    #main(retrain=True, modelnum=4)
     main(retrain=True, modelnum=5)#composite, NDVI
