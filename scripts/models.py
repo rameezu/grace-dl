@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+#Author: David Walling
+#Purpose: Encapsulates various Keras model definitions
+#=======================================================================
 import keras
 from keras.models import Sequential, Model
 from keras.layers.core import Dense, Dropout, Flatten,Activation,Reshape,Masking
@@ -80,7 +82,6 @@ def seqCNN3(seq_len=3, summary=False,backend='tf', N=64):
     model.add(Conv2D(1, kernel_size=(1, 1), padding='same', activation='tanh'))
     model.add(Flatten())
     model.add(Reshape((N,N)))
-
 
     if summary:
         print(model.summary())

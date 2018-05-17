@@ -1,6 +1,6 @@
-#author: alex sun
+#author: Alex Sun
 #date: 1/21/2018
-#purpose: do nldas to grace prediction
+#purpose: do nldas to grace prediction for Colorado
 #=====================================================================================
 import numpy as np
 import matplotlib

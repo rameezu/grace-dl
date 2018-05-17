@@ -71,6 +71,7 @@ def rmse(y_true, y_pred):
     return mse ** 0.5
 
 def RMSE(y_test, y_pred):
+    # Fixed version of RMSE
     return np.sqrt(np.mean(np.square(y_test - y_pred)))
     
 
