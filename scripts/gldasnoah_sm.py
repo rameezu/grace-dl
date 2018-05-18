@@ -9,7 +9,7 @@
 #===============================================
 
 import urllib as url
-import urllib.parse, gzip
+import urlparse, gzip
 import numpy as np
 from numpy import loadtxt
 import time
@@ -35,12 +35,12 @@ def main():
     ymin = 0 
     ymax = nrows 
     
-    print('lon %s, %s ' % (xmin, xmax))
-    print('lat %s, %s ' % (ymin, ymax))
+    print 'lon %s, %s ' % (xmin, xmax)
+    print 'lat %s, %s ' % (ymin, ymax)
 
     with Parallel(n_jobs=12) as parallelPool:
-        parallelPool(delayed(getNCFile)( iyear) for iyear in range(2000, 2017))
-
+        #parallelPool(delayed(getNCFile)( iyear) for iyear in range(2000, 2017))
+        parallelPool(delayed(getNCFile)( iyear) for iyear in range(2000, 2018))
 def getNCFile(iyear):
     dataURL = r"https://hydro1.gesdisc.eosdis.nasa.gov/dods/GLDAS_NOAH025_M.2.1"
     varname = ['sm100_200cm_ins'] #rain total
@@ -50,9 +50,9 @@ def getNCFile(iyear):
         filename = '/home/cc/gldas2/sm200/sm200%4d_%02d.nc'%(iyear, imon)
         #test if file already downloaded
         if not os.path.isfile(filename):         
-            cmd = ["ncwa -O -v ", varname[0], ' -d time,%d,%d'%(d0,d0+1), ' -a time ', dataURL, ' ', filename]
+            cmd = ["ncwa -O -v ", '^sm.?', ' -d time,%d,%d'%(d0,d0+1), ' -a time ', dataURL, ' ', filename]
             cmd =''.join(cmd)
-            print('executing %s' % cmd)
+            print 'executing %s' % cmd
             call(cmd, shell=True)
             d0+=1
 

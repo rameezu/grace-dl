@@ -42,17 +42,17 @@ nrows = 810
 ncols = 810
 
 def exactFile():
-    startYear = 2002
-    endYear = 2017
+    startYear = 2017
+    endYear = 2018
     col0 = np.int(((xllcorner-xll)/0.05))
     row0 = np.int(((yll-yllcorner)/0.05))
 
     for iyear in range(startYear,endYear):
-        monthrng = list(range(1,13))
+        monthrng = range(1,13)
         for imon in monthrng:
             dataURL = r'https://e4ftl01.cr.usgs.gov/MOLT/MOD13C2.006/{:4d}.{:02d}.01/'.format(iyear,imon)
             cmd = 'wget -r -np {0} {1}'.format(dataURL, "-A '*.hdf'")
-            print(cmd)
+            print cmd
             call(cmd, shell=True)
             #now process the file
             ncdir=r'./e4ftl01.cr.usgs.gov/MOLT/MOD13C2.006/{:4d}.{:02d}.01/'.format(iyear,imon)
@@ -78,7 +78,7 @@ def exactFile():
                 np.save('./ndvi/{:4d}{:02d}.npy'.format(iyear,imon), [ndvi])
                 #remove the downloaded file
                 cmd = 'rm -Rf {0}'.format('./e4ftl01.cr.usgs.gov')
-                print('removing ', cmd)
+                print 'removing ', cmd
                 call(cmd, shell=True)
 
 
